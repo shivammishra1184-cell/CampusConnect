@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Explore campus clubs, events and student resources." />
+  <title>CampusConnect | Vishwakarma Institute of Technology (VIT Pune)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#"><span class="brand-mark">C</span> campus<span>connect</span></a>
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">☰</button>
+    <nav id="navLinks">
+      <a href="#explore">Explore</a>
+      <a href="#events">Events</a>
+      <a href="#clubs">Clubs</a>
+      <a href="#about">About</a>
+      <a href="admin.html" style="font-weight:700;color:#6d8c36;">Admin Portal ↗</a>
+      <button class="nav-cta" id="openRegister">Join an event <span>↗</span></button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="pulse"></span> VISHWAKARMA INSTITUTE OF TECHNOLOGY · VIT PUNE</div>
+        <h1>Find your people.<br><span>Find your place.</span></h1>
+        <p class="hero-text">Discover student clubs, technical teams, and campus events at Vishwakarma Institute of Technology (VIT Pune).</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#explore">Explore campus <span>→</span></a>
+          <a class="text-link" href="#events">See what's happening <span>↗</span></a>
+        </div>
+        <div class="hero-stats">
+          <div><strong id="clubStatCount">40+</strong><small>Student clubs</small></div>
+          <div><strong>12</strong><small>Events this month</small></div>
+          <div><strong>1 place</strong><small>To get connected</small></div>
+        </div>
+      </div>
+      <div class="hero-art">
+        <div class="art-glow"></div>
+        <div class="art-card art-card-main">
+          <div class="art-top"><span> VIT PUNE CAMPUS / 2026</span><span>✳</span></div>
+          <div class="campus-illustration">
+            <div class="sun"></div><div class="cloud cloud-one"></div><div class="cloud cloud-two"></div>
+            <div class="building building-back"><i></i><i></i><i></i></div>
+            <div class="building building-front"><i></i><i></i><i></i><i></i></div>
+            <div class="tree tree-one"></div><div class="tree tree-two"></div>
+            <div class="path"></div>
+          </div>
+          <div class="art-bottom"><strong>Make campus count.</strong><span>Scroll to explore ↓</span></div>
+        </div>
+        <div class="floating-note"><span class="note-icon">✦</span><div><b>Something for everyone</b><small>Discover your next thing</small></div></div>
+        <div class="floating-tag">LEARN · CREATE · CONNECT</div>
+      </div>
+    </section>
+
+    <section class="quick-strip" id="explore">
+      <a href="#clubs" id="quickExploreClubs" class="strip-item">
+        <span class="strip-icon purple">⌘</span>
+        <span><b>Explore clubs</b><small>Find your community</small></span>
+      </a>
+      <a href="#events" id="quickJoinEvents" class="strip-item">
+        <span class="strip-icon orange">✳</span>
+        <span><b>Join events</b><small>Make new memories</small></span>
+      </a>
+      <a href="#resources" id="quickFindResources" class="strip-item">
+        <span class="strip-icon green">↗</span>
+        <span><b>Find resources</b><small>Get campus-ready</small></span>
+      </a>
+    </section>
+
+    <section class="section">
+      <div class="section-heading">
+        <div><div class="eyebrow">START EXPLORING</div><h2>What are you into?</h2></div>
+        <p>Choose an interest and discover what campus has to offer.</p>
+      </div>
+      <div class="category-grid" id="categoryGrid">
+        <button class="category active" data-category="All"><span>✦</span> Everything</button>
+        <button class="category" data-category="Technology"><span>⌘</span> Technology</button>
+        <button class="category" data-category="Arts"><span>✿</span> Arts & culture</button>
+        <button class="category" data-category="Sports"><span>⚡</span> Sports</button>
+        <button class="category" data-category="Community"><span>♡</span> Community</button>
+      </div>
+    </section>
+
+    <section class="section content-section" id="clubs">
+      <div class="section-heading">
+        <div><div class="eyebrow">MEET YOUR COMMUNITY</div><h2>Clubs to check out<span class="accent-dot">.</span></h2></div>
+        <label class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="Search clubs or events..." /></label>
+      </div>
+      <div class="card-grid" id="clubGrid"></div>
+      <p class="empty-state" id="emptyState" hidden>No matches yet. Try another search or category.</p>
+    </section>
+
+    <section class="events-section" id="events">
+      <div class="events-inner">
+        <div class="section-heading light-heading">
+          <div><div class="eyebrow">SAVE THE DATE</div><h2>Coming up on campus<span class="accent-dot">.</span></h2></div>
+          <p>Good things happen when you show up. Find your next campus moment.</p>
+        </div>
+        <div class="event-list" id="eventList"></div>
+      </div>
+    </section>
+
+    <section class="section about-section" id="about">
+      <div class="about-card">
+        <div class="about-symbol">✳</div>
+        <div><div class="eyebrow">CAMPUS IS BETTER TOGETHER</div><h2>Your next chapter<br>starts here.</h2></div>
+        <p>CampusConnect is a student-friendly hub concept that brings clubs, events and campus resources together in one easy place.</p>
+        <button class="button button-dark" id="aboutRegister">Get involved <span>→</span></button>
+      </div>
+    </section>
+  </main>
+
+  <footer><a class="brand footer-brand" href="#"><span class="brand-mark">C</span> campus<span>connect</span></a><p>Made for curious minds and campus explorers at Vishwakarma Institute of Technology (VIT Pune).</p><span>© 2026 CampusConnect · VIT Pune</span></footer>
+
+  <dialog id="detailsDialog" class="modal">
+    <button class="modal-close" data-close aria-label="Close">×</button>
+    <div id="detailsContent"></div>
+  </dialog>
+
+  <dialog id="registerDialog" class="modal register-modal">
+    <button class="modal-close" data-close aria-label="Close">×</button>
+    <div id="formSection">
+      <div class="eyebrow">TAKE THE FIRST STEP</div>
+      <h2>Join the community<span class="accent-dot">.</span></h2>
+      <p class="modal-intro">Register for VIT Pune clubs, hackathons, and cultural fests.</p>
+      <form id="registerForm">
+        <label>Selected Club or Event
+          <input name="targetItem" id="regTargetItem" readonly style="background:#f4f6f0;font-weight:700;color:#2f4621;border-color:#d5decb;" value="General Campus Life">
+        </label>
+        <label>Your name<input name="name" required minlength="2" placeholder="e.g. Aditi Sharma"></label>
+        <label>College email<input name="email" type="email" required placeholder="you@vit.edu"></label>
+        <label>Primary Branch / Interest
+          <select name="interest" required>
+            <option value="Technology">Technology & Coding</option>
+            <option value="Robotics">Robotics & Hardware</option>
+            <option value="Arts">Arts & Cultural</option>
+            <option value="Sports">Sports & Athletics</option>
+            <option value="Community">Community & Entrepreneurship</option>
+          </select>
+        </label>
+        <button class="button button-primary form-submit" type="submit">Confirm & Generate Entry Pass <span>→</span></button>
+        <p class="form-message" id="formMessage" role="status"></p>
+      </form>
+    </div>
+
+    <!-- Generated Digital Campus Ticket -->
+    <div id="passContainer" hidden>
+      <div class="pass-card">
+        <div class="pass-top">
+          <span class="pass-tag">VIT PUNE · VERIFIED PASS</span>
+          <span class="pass-num" id="passId">#VIT-001</span>
+        </div>
+        <div class="pass-body">
+          <div class="pass-event" id="passEventName">Hacktovate 2026</div>
+          <div class="pass-name" id="passStudentName">Student Name</div>
+          <div class="pass-meta">
+            <div><small>DATE ISSUED</small><b id="passDate">30 Oct 2026</b></div>
+            <div><small>CAMPUS VENUE</small><b>VIT Pune, Bibwewadi</b></div>
+          </div>
+        </div>
+        <div class="pass-qr-layout">
+          <div class="qr-box">
+            <img id="passQrImg" src="" alt="Verified Event Pass QR Code" />
+          </div>
+          <div class="qr-details">
+            <span class="qr-badge">SCAN TO VERIFY ENTRY</span>
+            <p>Scan with any camera or scanner at the campus gate to verify registration.</p>
+            <div class="qr-verified-text">✓ CONFIRMED REGISTRATION</div>
+          </div>
+        </div>
+      </div>
+      <div class="pass-actions">
+        <button type="button" class="button button-primary" id="printPassBtn">Print / Save Pass 🖨️</button>
+        <button type="button" class="button button-dark" id="closePassBtn">Close</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Campus Resources Dialog -->
+  <dialog id="resourcesDialog" class="modal">
+    <button class="modal-close" data-close aria-label="Close">×</button>
+    <div class="eyebrow"><span class="pulse"></span> VIT PUNE STUDENT PORTAL</div>
+    <h2>Campus Resources<span class="accent-dot">.</span></h2>
+    <p class="modal-intro">Essential academic links, portals, and student facilities for VIT Pune.</p>
+    <div class="resources-grid">
+      <a href="https://learner.vierp.in" target="_blank" rel="noopener noreferrer" class="resource-card">
+        <div class="resource-icon">💻</div>
+        <div>
+          <b>ERP & Learner Portal ↗</b>
+          <p>Official EduPlusCampus portal for daily attendance, course registration, and class schedule.</p>
+        </div>
+      </a>
+      <a href="https://epvit.vierp.in" target="_blank" rel="noopener noreferrer" class="resource-card">
+        <div class="resource-icon">📝</div>
+        <div>
+          <b>EasyPariksha & Exams ↗</b>
+          <p>Exam hall tickets, mid-sem/end-sem timetables, seating allotments, and results.</p>
+        </div>
+      </a>
+      <a href="https://www.vit.edu" target="_blank" rel="noopener noreferrer" class="resource-card">
+        <div class="resource-icon">📚</div>
+        <div>
+          <b>Central Library & Campus ↗</b>
+          <p>Official VIT Pune portal, academic notices, syllabus, and digital library resources.</p>
+        </div>
+      </a>
+      <a href="https://vitpunerobotics.com" target="_blank" rel="noopener noreferrer" class="resource-card">
+        <div class="resource-icon">🔬</div>
+        <div>
+          <b>TRF Maker Space & Labs ↗</b>
+          <p>Innovation workspace, 3D printing, circuit design, and autonomous bot testing.</p>
+        </div>
+      </a>
+    </div>
+  </dialog>
+
+  <script src="script.js"></script>
+</body>
+</html>

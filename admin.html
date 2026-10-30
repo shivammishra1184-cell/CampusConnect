@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Portal · CampusConnect | VIT Pune</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .admin-container {
+      max-width: 1160px;
+      margin: 40px auto 80px;
+      padding: 0 5%;
+    }
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 35px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--muted);
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 10px 18px;
+      border-radius: 30px;
+      transition: .2s;
+    }
+    .back-btn:hover {
+      background: var(--dark);
+      color: #fff;
+    }
+    .admin-grid {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 30px;
+    }
+    @media (max-width: 900px) {
+      .admin-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .admin-card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 26px;
+      box-shadow: 0 10px 30px #00000006;
+    }
+    .admin-card h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 20px;
+      margin-top: 0;
+      margin-bottom: 6px;
+    }
+    .admin-card p.subtitle {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 0;
+      margin-bottom: 22px;
+    }
+    .form-group {
+      display: grid;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+    .form-group label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      padding: 11px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      font-size: 12px;
+      font-family: inherit;
+      outline: none;
+      background: #fafaf8;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: #8fa96d;
+      background: #fff;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .table-responsive {
+      overflow-x: auto;
+      margin-top: 15px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      text-align: left;
+    }
+    th {
+      background: #f4f6f0;
+      padding: 12px 14px;
+      font-weight: 700;
+      color: var(--ink);
+      font-family: 'Space Grotesk', sans-serif;
+      border-bottom: 2px solid var(--line);
+    }
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      color: #3b4541;
+    }
+    tr:hover td {
+      background: #fafbf8;
+    }
+    .btn-delete {
+      background: #ffeded;
+      color: #c93b3b;
+      border: 1px solid #ffd0d0;
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-delete:hover {
+      background: #c93b3b;
+      color: #fff;
+    }
+    .badge-chip {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 20px;
+      font-size: 9px;
+      font-weight: 800;
+      text-transform: uppercase;
+      background: #eef3e6;
+      color: #658732;
+    }
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    .btn-export {
+      background: var(--dark);
+      color: #d7f573;
+      border: none;
+      padding: 9px 16px;
+      border-radius: 30px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-export:hover {
+      opacity: 0.92;
+    }
+    .stat-badge {
+      background: #f0f4ea;
+      color: #55722c;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    #authBanner {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html"><span class="brand-mark">C</span> campus<span>connect</span></a>
+    <div>
+      <span class="badge-chip">Admin & Organizer Portal · VIT Pune</span>
+    </div>
+  </header>
+
+  <!-- Passcode Protected Login Gate -->
+  <div id="loginGate" style="background:#fff;border:1px solid var(--line);border-radius:16px;padding:34px;max-width:420px;margin:80px auto;text-align:center;box-shadow:0 15px 40px #0000000a;">
+    <div class="eyebrow"><span class="pulse"></span> ORGANIZER SECURITY</div>
+    <h3 style="font-family:'Space Grotesk',sans-serif;margin-top:5px;font-size:24px;">Admin Portal Login</h3>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:20px;">Enter the organizer security password to access the management console.</p>
+    <form id="loginForm">
+      <input type="password" id="adminPassInput" placeholder="Enter Admin Password" required style="width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:8px;margin-bottom:14px;font-size:13px;outline:none;" />
+      <button type="submit" class="button button-primary" style="width:100%;justify-content:center;">Unlock Console <span>→</span></button>
+      <p id="loginError" style="color:#c93b3b;font-size:11px;margin-top:10px;" hidden>Incorrect password. Access denied.</p>
+    </form>
+  </div>
+
+  <main class="admin-container" id="dashboardContent" hidden>
+    <div class="admin-header">
+      <div>
+        <div class="eyebrow"><span class="pulse"></span> VIT PUNE MANAGEMENT CONSOLE</div>
+        <h2>Campus Organizers Dashboard<span class="accent-dot">.</span></h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <button id="logoutBtn" class="back-btn" style="cursor:pointer;">🔒 Logout</button>
+        <a href="index.html" class="back-btn">← Back to Main Hub</a>
+      </div>
+    </div>
+
+    <div class="admin-grid">
+      <!-- Add Event Panel -->
+      <div class="admin-card">
+        <h3>Publish Campus Event</h3>
+        <p class="subtitle">Add a new event to the live VIT Pune explorer.</p>
+
+        <form id="addEventForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Day (e.g. 25)</label>
+              <input type="text" id="evDay" required maxlength="2" placeholder="25" />
+            </div>
+            <div class="form-group">
+              <label>Month (e.g. NOV)</label>
+              <input type="text" id="evMonth" required maxlength="3" placeholder="NOV" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Event Name</label>
+            <input type="text" id="evName" required placeholder="e.g. Autonomous Bot Wars" />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Category</label>
+              <select id="evCategory" required>
+                <option value="Technology">Technology</option>
+                <option value="Arts">Arts</option>
+                <option value="Sports">Sports</option>
+                <option value="Community">Community</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Type Badge</label>
+              <select id="evType" required>
+                <option value="COMPETITION">COMPETITION</option>
+                <option value="WORKSHOP">WORKSHOP</option>
+                <option value="CULTURAL">CULTURAL</option>
+                <option value="SPORTS">SPORTS</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Time & Venue</label>
+            <input type="text" id="evTime" required placeholder="e.g. 10:30 AM · Auditorium" />
+          </div>
+
+          <div class="form-group">
+            <label>Short Description</label>
+            <textarea id="evDescription" rows="3" required placeholder="What is this event about?"></textarea>
+          </div>
+
+          <button type="submit" class="button button-primary" style="width:100%;justify-content:center;margin-top:10px;">
+            Save & Publish Event <span>+</span>
+          </button>
+          <p id="eventStatusMsg" style="font-size:11px;text-align:center;margin-top:10px;"></p>
+        </form>
+      </div>
+
+      <!-- Registrations List -->
+      <div class="admin-card">
+        <div class="toolbar">
+          <div>
+            <h3>Registered Students <span class="stat-badge" id="regCount">0</span></h3>
+            <p class="subtitle" style="margin-bottom:0">Live entries saved to SQLite database (<code>campus.db</code>)</p>
+          </div>
+          <button class="btn-export" id="exportBtn">📥 Export to CSV</button>
+        </div>
+
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Student Name</th>
+                <th>College Email</th>
+                <th>Registered For</th>
+                <th>Branch</th>
+                <th>Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="registrationsTbody">
+              <tr><td colspan="7" style="text-align:center;padding:25px;color:var(--muted)">Loading entries...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Passcode Auth Check
+    const PASSCODE = 'Shivam125126';
+    const loginForm = document.getElementById('loginForm');
+    const loginGate = document.getElementById('loginGate');
+    const dashboardContent = document.getElementById('dashboardContent');
+    const loginError = document.getElementById('loginError');
+
+    if (sessionStorage.getItem('vit_admin_auth') === 'true') {
+      unlockConsole();
+    }
+
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const val = document.getElementById('adminPassInput').value.trim();
+      if (val === PASSCODE) {
+        sessionStorage.setItem('vit_admin_auth', 'true');
+        loginError.hidden = true;
+        unlockConsole();
+      } else {
+        loginError.hidden = false;
+      }
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      sessionStorage.removeItem('vit_admin_auth');
+      dashboardContent.hidden = true;
+      loginGate.hidden = false;
+      document.getElementById('adminPassInput').value = '';
+      loginError.hidden = true;
+    });
+
+    function unlockConsole() {
+      loginGate.hidden = true;
+      dashboardContent.hidden = false;
+      loadRegistrations();
+    }
+
+    async function loadRegistrations() {
+      const tbody = document.getElementById('registrationsTbody');
+      try {
+        const res = await fetch('/api/registrations');
+        const data = await res.json();
+        document.getElementById('regCount').textContent = data.length;
+
+        if (data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:35px;color:var(--muted)">No student registrations recorded yet.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = data.map(item => `
+          <tr>
+            <td>#${item.id}</td>
+            <td><b>${escapeHtml(item.name)}</b></td>
+            <td>${escapeHtml(item.email)}</td>
+            <td><b style="color:#2e441f;">${escapeHtml(item.club_or_event || 'General Campus')}</b></td>
+            <td><span class="badge-chip">${escapeHtml(item.interest)}</span></td>
+            <td>${new Date(item.created_at).toLocaleDateString()}</td>
+            <td><button class="btn-delete" onclick="deleteReg(${item.id})">Delete</button></td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        tbody.innerHTML = '<tr><td colspan="7" style="color:red;text-align:center;">Failed to load registrations.</td></tr>';
+      }
+    }
+
+    async function deleteReg(id) {
+      if (!confirm('Remove this student registration?')) return;
+      try {
+        await fetch(`/api/registrations/${id}`, { method: 'DELETE' });
+        loadRegistrations();
+      } catch (err) {
+        alert('Error deleting registration');
+      }
+    }
+
+    document.getElementById('addEventForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const status = document.getElementById('eventStatusMsg');
+      status.textContent = 'Publishing...';
+      status.style.color = '#666';
+
+      const payload = {
+        day: document.getElementById('evDay').value.trim(),
+        month: document.getElementById('evMonth').value.trim().toUpperCase(),
+        name: document.getElementById('evName').value.trim(),
+        category: document.getElementById('evCategory').value,
+        type: document.getElementById('evType').value,
+        time: document.getElementById('evTime').value.trim(),
+        description: document.getElementById('evDescription').value.trim(),
+        emoji: '📌'
+      };
+
+      try {
+        const res = await fetch('/api/events', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+        if (res.ok && result.success) {
+          status.style.color = 'green';
+          status.textContent = '✓ Event saved to SQLite and published!';
+          e.target.reset();
+        } else {
+          throw new Error(result.error || 'Failed');
+        }
+      } catch (err) {
+        status.style.color = 'red';
+        status.textContent = 'Error: ' + err.message;
+      }
+    });
+
+    document.getElementById('exportBtn').addEventListener('click', async () => {
+      try {
+        const res = await fetch('/api/registrations');
+        const data = await res.json();
+        if (!data || data.length === 0) {
+          alert('No registrations available to export.');
+          return;
+        }
+
+        let csv = 'ID,Student Name,College Email,Registered For,Branch / Interest,Registration Date\n';
+        data.forEach(r => {
+          csv += `"${r.id}","${(r.name || '').replace(/"/g, '""')}","${(r.email || '').replace(/"/g, '""')}","${(r.club_or_event || 'General Campus').replace(/"/g, '""')}","${(r.interest || '').replace(/"/g, '""')}","${r.created_at}"\n`;
+        });
+
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `vit_pune_registrations_${new Date().toISOString().slice(0,10)}.csv`;
+        a.click();
+      } catch (err) {
+        alert('Export failed.');
+      }
+    });
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text || '';
+      return div.innerHTML;
+    }
+
+    loadRegistrations();
+  </script>
+</body>
+</html>
