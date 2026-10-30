@@ -139,11 +139,11 @@ app.delete('/api/events/:id', (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`===============================================`);
   console.log(`🎓 CampusConnect (VIT Pune) Backend Server Running`);
-  console.log(`🌐 Web App:   http://localhost:${PORT}`);
-  console.log(`🛡️ Admin View: http://localhost:${PORT}/admin.html`);
-  console.log(`📁 Database:   campus.db (SQLite)`);
+  console.log(`🌐 Web App:   http://0.0.0.0:${PORT} (Port: ${PORT})`);
+  console.log(`🛡️ Admin View: /admin.html`);
+  console.log(`📁 Database:   campus.db (SQLite with Resilient Fallback)`);
   console.log(`===============================================`);
 });

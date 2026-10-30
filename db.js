@@ -1,49 +1,58 @@
-const { DatabaseSync } = require('node:sqlite');
-const path = require('path');
-
-const DB_PATH = path.join(__dirname, 'campus.db');
-const db = new DatabaseSync(DB_PATH);
-
-// 1. Initialize Tables
-db.exec(`
-  CREATE TABLE IF NOT EXISTS clubs (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    category TEXT NOT NULL,
-    emoji TEXT,
-    members TEXT,
-    description TEXT,
-    color TEXT,
-    dark TEXT,
-    extra TEXT
-  );
-
-  CREATE TABLE IF NOT EXISTS events (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    day TEXT NOT NULL,
-    month TEXT NOT NULL,
-    name TEXT NOT NULL,
-    description TEXT,
-    type TEXT,
-    time TEXT,
-    category TEXT,
-    emoji TEXT
-  );
-
-  CREATE TABLE IF NOT EXISTS registrations (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    email TEXT NOT NULL,
-    interest TEXT NOT NULL,
-    club_or_event TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  );
-`);
+let db = null;
+let useSqlite = false;
 
 try {
-  db.exec('ALTER TABLE registrations ADD COLUMN club_or_event TEXT;');
-} catch (e) {
-  // column already exists
+  const { DatabaseSync } = require('node:sqlite');
+  const path = require('path');
+  const DB_PATH = path.join(__dirname, 'campus.db');
+  db = new DatabaseSync(DB_PATH);
+
+  // 1. Initialize Tables
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS clubs (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      category TEXT NOT NULL,
+      emoji TEXT,
+      members TEXT,
+      description TEXT,
+      color TEXT,
+      dark TEXT,
+      extra TEXT
+    );
+
+    CREATE TABLE IF NOT EXISTS events (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      day TEXT NOT NULL,
+      month TEXT NOT NULL,
+      name TEXT NOT NULL,
+      description TEXT,
+      type TEXT,
+      time TEXT,
+      category TEXT,
+      emoji TEXT
+    );
+
+    CREATE TABLE IF NOT EXISTS registrations (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      email TEXT NOT NULL,
+      interest TEXT NOT NULL,
+      club_or_event TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+  `);
+
+  try {
+    db.exec('ALTER TABLE registrations ADD COLUMN club_or_event TEXT;');
+  } catch (e) {
+    // column already exists
+  }
+
+  useSqlite = true;
+} catch (err) {
+  console.log('Notice: node:sqlite not available on this Node runtime. Using resilient database fallback.');
+  useSqlite = false;
 }
 
 // 2. Official 42 VIT Pune Clubs Data
@@ -477,15 +486,17 @@ const vitClubs = [
   }
 ];
 
-// Always re-sync all 42 official clubs into the database
-db.exec('DELETE FROM clubs;');
-const insertClub = db.prepare(`
-  INSERT INTO clubs (name, category, emoji, members, description, color, dark, extra)
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-`);
+if (useSqlite && db) {
+  // Always re-sync all 42 official clubs into the database
+  db.exec('DELETE FROM clubs;');
+  const insertClub = db.prepare(`
+    INSERT INTO clubs (name, category, emoji, members, description, color, dark, extra)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+  `);
 
-for (const c of vitClubs) {
-  insertClub.run(c.name, c.category, c.emoji, c.members, c.description, c.color, c.dark, c.extra);
+  for (const c of vitClubs) {
+    insertClub.run(c.name, c.category, c.emoji, c.members, c.description, c.color, c.dark, c.extra);
+  }
 }
 
 // 3. Ensure Default Events
@@ -613,47 +624,87 @@ const vitEvents = [
   }
 ];
 
-// Always re-sync all official verified events starting from 1 November into the database
-db.exec('DELETE FROM events;');
-const insertEvent = db.prepare(`
-  INSERT INTO events (day, month, name, description, type, time, category, emoji)
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-`);
+if (useSqlite && db) {
+  // Always re-sync all official verified events starting from 1 November into the database
+  db.exec('DELETE FROM events;');
+  const insertEvent = db.prepare(`
+    INSERT INTO events (day, month, name, description, type, time, category, emoji)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+  `);
 
-for (const e of vitEvents) {
-  insertEvent.run(e.day, e.month, e.name, e.description, e.type, e.time, e.category, e.emoji);
-}
-
-
-// 4. Database Helper Functions
-module.exports = {
-  getClubs: () => db.prepare('SELECT * FROM clubs ORDER BY id ASC').all(),
-  getEvents: () => db.prepare('SELECT * FROM events ORDER BY id ASC').all(),
-  addEvent: ({ day, month, name, description, type, time, category, emoji }) => {
-    const stmt = db.prepare(`
-      INSERT INTO events (day, month, name, description, type, time, category, emoji)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    `);
-    const info = stmt.run(day, month, name, description, type, time, category, emoji || '📌');
-    return { id: info.lastInsertRowid };
-  },
-  deleteEvent: (id) => {
-    db.prepare('DELETE FROM events WHERE id = ?').run(id);
-    return { success: true };
-  },
-  saveRegistration: ({ name, email, interest, club_or_event }) => {
-    const stmt = db.prepare(`
-      INSERT INTO registrations (name, email, interest, club_or_event)
-      VALUES (?, ?, ?, ?)
-    `);
-    const info = stmt.run(name, email, interest, club_or_event || interest);
-    return { id: info.lastInsertRowid };
-  },
-  getRegistrations: () => {
-    return db.prepare('SELECT * FROM registrations ORDER BY id DESC').all();
-  },
-  deleteRegistration: (id) => {
-    db.prepare('DELETE FROM registrations WHERE id = ?').run(id);
-    return { success: true };
+  for (const e of vitEvents) {
+    insertEvent.run(e.day, e.month, e.name, e.description, e.type, e.time, e.category, e.emoji);
   }
-};
+
+  // 4. Database Helper Functions (SQLite)
+  module.exports = {
+    getClubs: () => db.prepare('SELECT * FROM clubs ORDER BY id ASC').all(),
+    getEvents: () => db.prepare('SELECT * FROM events ORDER BY id ASC').all(),
+    addEvent: ({ day, month, name, description, type, time, category, emoji }) => {
+      const stmt = db.prepare(`
+        INSERT INTO events (day, month, name, description, type, time, category, emoji)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      `);
+      const info = stmt.run(day, month, name, description, type, time, category, emoji || '📌');
+      return { id: info.lastInsertRowid };
+    },
+    deleteEvent: (id) => {
+      db.prepare('DELETE FROM events WHERE id = ?').run(id);
+      return { success: true };
+    },
+    saveRegistration: ({ name, email, interest, club_or_event }) => {
+      const stmt = db.prepare(`
+        INSERT INTO registrations (name, email, interest, club_or_event)
+        VALUES (?, ?, ?, ?)
+      `);
+      const info = stmt.run(name, email, interest, club_or_event || interest);
+      return { id: info.lastInsertRowid };
+    },
+    getRegistrations: () => {
+      return db.prepare('SELECT * FROM registrations ORDER BY id DESC').all();
+    },
+    deleteRegistration: (id) => {
+      db.prepare('DELETE FROM registrations WHERE id = ?').run(id);
+      return { success: true };
+    }
+  };
+} else {
+  // 4. Resilient In-Memory Fallback for Node 18/20 cloud environments
+  let fallbackRegistrations = [];
+  let fallbackEvents = vitEvents.map((e, idx) => ({ id: idx + 1, ...e }));
+  let fallbackClubs = vitClubs.map((c, idx) => ({ id: idx + 1, ...c }));
+
+  module.exports = {
+    getClubs: () => fallbackClubs,
+    getEvents: () => fallbackEvents,
+    addEvent: ({ day, month, name, description, type, time, category, emoji }) => {
+      const newEvent = {
+        id: fallbackEvents.length > 0 ? Math.max(...fallbackEvents.map(e => e.id)) + 1 : 1,
+        day, month, name, description, type, time, category, emoji: emoji || '📌'
+      };
+      fallbackEvents.push(newEvent);
+      return { id: newEvent.id };
+    },
+    deleteEvent: (id) => {
+      fallbackEvents = fallbackEvents.filter(e => e.id !== Number(id));
+      return { success: true };
+    },
+    saveRegistration: ({ name, email, interest, club_or_event }) => {
+      const newReg = {
+        id: fallbackRegistrations.length > 0 ? Math.max(...fallbackRegistrations.map(r => r.id)) + 1 : 1,
+        name,
+        email,
+        interest,
+        club_or_event: club_or_event || interest,
+        created_at: new Date().toISOString()
+      };
+      fallbackRegistrations.unshift(newReg);
+      return { id: newReg.id };
+    },
+    getRegistrations: () => fallbackRegistrations,
+    deleteRegistration: (id) => {
+      fallbackRegistrations = fallbackRegistrations.filter(r => r.id !== Number(id));
+      return { success: true };
+    }
+  };
+}
